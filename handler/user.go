@@ -2,12 +2,11 @@ package handler
 
 import (
 	"context"
+	pb "github.com/GaloisZhou/go-micro-demo-service-user/proto"
 	"io"
 	"time"
 
 	log "go-micro.dev/v4/logger"
-
-	pb "user/proto"
 )
 
 type User struct{}

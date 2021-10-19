@@ -1,4 +1,4 @@
-module user
+module github.com/GaloisZhou/go-micro-demo-service-user
 
 go 1.16
 

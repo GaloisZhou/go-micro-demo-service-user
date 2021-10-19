@@ -1,10 +1,10 @@
 package main
 
 import (
+	"github.com/GaloisZhou/go-micro-demo-service-user/handler"
+	pb "github.com/GaloisZhou/go-micro-demo-service-user/proto"
 	"github.com/asim/go-micro/plugins/registry/consul/v4"
 	"go-micro.dev/v4/registry"
-	"user/handler"
-	pb "user/proto"
 
 	"go-micro.dev/v4"
 	log "go-micro.dev/v4/logger"
