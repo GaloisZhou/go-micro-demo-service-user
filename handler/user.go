@@ -2,8 +2,10 @@ package handler
 
 import (
 	"context"
+	"fmt"
 	pb "github.com/GaloisZhou/go-micro-demo-service-user/proto"
 	"io"
+	"math/rand"
 	"time"
 
 	log "go-micro.dev/v4/logger"
@@ -11,9 +13,11 @@ import (
 
 type User struct{}
 
+var clientId = rand.Int()
+
 func (e *User) Call(ctx context.Context, req *pb.CallRequest, rsp *pb.CallResponse) error {
 	log.Infof("Received User.Call request: %v", req)
-	rsp.Msg = "Hello " + req.Name
+	rsp.Msg = fmt.Sprintf("%d: Hello %s", clientId, req.Name)
 	return nil
 }
 
@@ -21,11 +25,13 @@ func (e *User) ClientStream(ctx context.Context, stream pb.User_ClientStreamStre
 	var count int64
 	for {
 		req, err := stream.Recv()
+		fmt.Println(err)
 		if err == io.EOF {
 			log.Infof("Got %v pings total", count)
 			return stream.SendMsg(&pb.ClientStreamResponse{Count: count})
 		}
 		if err != nil {
+			log.Warnf("err=%v", err)
 			return err
 		}
 		log.Infof("Got ping %v", req.Stroke)
@@ -42,7 +48,7 @@ func (e *User) ServerStream(ctx context.Context, req *pb.ServerStreamRequest, st
 		}); err != nil {
 			return err
 		}
-		time.Sleep(time.Millisecond * 2500)
+		time.Sleep(time.Millisecond * 250)
 	}
 	return nil
 }

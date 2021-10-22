@@ -7,6 +7,10 @@
 package user
 
 import (
+	context "context"
+	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -603,4 +607,286 @@ func file_proto_user_proto_init() {
 	file_proto_user_proto_rawDesc = nil
 	file_proto_user_proto_goTypes = nil
 	file_proto_user_proto_depIdxs = nil
+}
+
+// Reference imports to suppress errors if they are not otherwise used.
+var _ context.Context
+var _ grpc.ClientConnInterface
+
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the grpc package it is being compiled against.
+const _ = grpc.SupportPackageIsVersion6
+
+// UserClient is the client API for User service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+type UserClient interface {
+	Call(ctx context.Context, in *CallRequest, opts ...grpc.CallOption) (*CallResponse, error)
+	ClientStream(ctx context.Context, opts ...grpc.CallOption) (User_ClientStreamClient, error)
+	ServerStream(ctx context.Context, in *ServerStreamRequest, opts ...grpc.CallOption) (User_ServerStreamClient, error)
+	BidiStream(ctx context.Context, opts ...grpc.CallOption) (User_BidiStreamClient, error)
+}
+
+type userClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewUserClient(cc grpc.ClientConnInterface) UserClient {
+	return &userClient{cc}
+}
+
+func (c *userClient) Call(ctx context.Context, in *CallRequest, opts ...grpc.CallOption) (*CallResponse, error) {
+	out := new(CallResponse)
+	err := c.cc.Invoke(ctx, "/user.User/Call", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) ClientStream(ctx context.Context, opts ...grpc.CallOption) (User_ClientStreamClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_User_serviceDesc.Streams[0], "/user.User/ClientStream", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &userClientStreamClient{stream}
+	return x, nil
+}
+
+type User_ClientStreamClient interface {
+	Send(*ClientStreamRequest) error
+	CloseAndRecv() (*ClientStreamResponse, error)
+	grpc.ClientStream
+}
+
+type userClientStreamClient struct {
+	grpc.ClientStream
+}
+
+func (x *userClientStreamClient) Send(m *ClientStreamRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *userClientStreamClient) CloseAndRecv() (*ClientStreamResponse, error) {
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	m := new(ClientStreamResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *userClient) ServerStream(ctx context.Context, in *ServerStreamRequest, opts ...grpc.CallOption) (User_ServerStreamClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_User_serviceDesc.Streams[1], "/user.User/ServerStream", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &userServerStreamClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type User_ServerStreamClient interface {
+	Recv() (*ServerStreamResponse, error)
+	grpc.ClientStream
+}
+
+type userServerStreamClient struct {
+	grpc.ClientStream
+}
+
+func (x *userServerStreamClient) Recv() (*ServerStreamResponse, error) {
+	m := new(ServerStreamResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *userClient) BidiStream(ctx context.Context, opts ...grpc.CallOption) (User_BidiStreamClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_User_serviceDesc.Streams[2], "/user.User/BidiStream", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &userBidiStreamClient{stream}
+	return x, nil
+}
+
+type User_BidiStreamClient interface {
+	Send(*BidiStreamRequest) error
+	Recv() (*BidiStreamResponse, error)
+	grpc.ClientStream
+}
+
+type userBidiStreamClient struct {
+	grpc.ClientStream
+}
+
+func (x *userBidiStreamClient) Send(m *BidiStreamRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *userBidiStreamClient) Recv() (*BidiStreamResponse, error) {
+	m := new(BidiStreamResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+// UserServer is the server API for User service.
+type UserServer interface {
+	Call(context.Context, *CallRequest) (*CallResponse, error)
+	ClientStream(User_ClientStreamServer) error
+	ServerStream(*ServerStreamRequest, User_ServerStreamServer) error
+	BidiStream(User_BidiStreamServer) error
+}
+
+// UnimplementedUserServer can be embedded to have forward compatible implementations.
+type UnimplementedUserServer struct {
+}
+
+func (*UnimplementedUserServer) Call(context.Context, *CallRequest) (*CallResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Call not implemented")
+}
+func (*UnimplementedUserServer) ClientStream(User_ClientStreamServer) error {
+	return status.Errorf(codes.Unimplemented, "method ClientStream not implemented")
+}
+func (*UnimplementedUserServer) ServerStream(*ServerStreamRequest, User_ServerStreamServer) error {
+	return status.Errorf(codes.Unimplemented, "method ServerStream not implemented")
+}
+func (*UnimplementedUserServer) BidiStream(User_BidiStreamServer) error {
+	return status.Errorf(codes.Unimplemented, "method BidiStream not implemented")
+}
+
+func RegisterUserServer(s *grpc.Server, srv UserServer) {
+	s.RegisterService(&_User_serviceDesc, srv)
+}
+
+func _User_Call_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CallRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).Call(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.User/Call",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).Call(ctx, req.(*CallRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_ClientStream_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(UserServer).ClientStream(&userClientStreamServer{stream})
+}
+
+type User_ClientStreamServer interface {
+	SendAndClose(*ClientStreamResponse) error
+	Recv() (*ClientStreamRequest, error)
+	grpc.ServerStream
+}
+
+type userClientStreamServer struct {
+	grpc.ServerStream
+}
+
+func (x *userClientStreamServer) SendAndClose(m *ClientStreamResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *userClientStreamServer) Recv() (*ClientStreamRequest, error) {
+	m := new(ClientStreamRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func _User_ServerStream_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(ServerStreamRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(UserServer).ServerStream(m, &userServerStreamServer{stream})
+}
+
+type User_ServerStreamServer interface {
+	Send(*ServerStreamResponse) error
+	grpc.ServerStream
+}
+
+type userServerStreamServer struct {
+	grpc.ServerStream
+}
+
+func (x *userServerStreamServer) Send(m *ServerStreamResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _User_BidiStream_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(UserServer).BidiStream(&userBidiStreamServer{stream})
+}
+
+type User_BidiStreamServer interface {
+	Send(*BidiStreamResponse) error
+	Recv() (*BidiStreamRequest, error)
+	grpc.ServerStream
+}
+
+type userBidiStreamServer struct {
+	grpc.ServerStream
+}
+
+func (x *userBidiStreamServer) Send(m *BidiStreamResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *userBidiStreamServer) Recv() (*BidiStreamRequest, error) {
+	m := new(BidiStreamRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+var _User_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "user.User",
+	HandlerType: (*UserServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Call",
+			Handler:    _User_Call_Handler,
+		},
+	},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "ClientStream",
+			Handler:       _User_ClientStream_Handler,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "ServerStream",
+			Handler:       _User_ServerStream_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "BidiStream",
+			Handler:       _User_BidiStream_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
+		},
+	},
+	Metadata: "proto/user.proto",
 }
