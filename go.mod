@@ -4,6 +4,7 @@ go 1.16
 
 require (
 	github.com/asim/go-micro/plugins/registry/consul/v4 v4.0.0-20211019191242-9edc569e68bb
+	github.com/golang/protobuf v1.5.2
 	go-micro.dev/v4 v4.1.0
 	google.golang.org/grpc v1.27.1
 	google.golang.org/protobuf v1.27.1
